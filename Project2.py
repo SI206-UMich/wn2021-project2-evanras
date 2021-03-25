@@ -15,7 +15,28 @@ def get_titles_from_search_results(filename):
     [('Book title 1', 'Author 1'), ('Book title 2', 'Author 2')...]
     """
 
-    pass
+    tups = []
+    bookList=[]
+    authorList=[]
+    file1 = open(filename, "r")
+    data = file1.read()
+    soup = BeautifulSoup(data, "html.parser")
+    books = soup.find_all("a", class_ = "bookTitle")
+    for book in books:
+        bookList.append(book.text.strip())
+
+    
+    authors = soup.find_all("div", class_ = "authorName__container")
+    for author in authors:
+        authorList.append(author.text.strip())
+    
+    for i in range(len(bookList)):
+        tup = (bookList[i], authorList[i])
+        tups.append(tup)
+    print(tups)
+    return tups
+
+
 
 
 def get_search_links():
@@ -31,8 +52,18 @@ def get_search_links():
     “https://www.goodreads.com/book/show/kdkd".
 
     """
+    links = []
+    url = "https://www.goodreads.com/search?q=fantasy&qid=NwUsLiA2Nc"
+    resp = requests.get(url)
+    soup = BeautifulSoup(resp.content, "html.parser")
+    books = soup.find_all("a", class_ = "bookTitle")
+    for book in books:
+        link = book["href"]
+        if link.startswith("/book/show/"):
+            links.append("https://www.goodreads.com" + link)
+    return links
+        
 
-    pass
 
 
 def get_book_summary(book_url):
@@ -63,7 +94,9 @@ def summarize_best_books(filepath):
     ("Fiction", "The Testaments (The Handmaid's Tale, #2)", "https://www.goodreads.com/choiceawards/best-fiction-books-2020") 
     to your list of tuples.
     """
-    pass
+    file1 = open(filename, "r")
+    data = file1.read()
+    soup = BeautifulSoup(data, "html.parser")
 
 
 def write_csv(data, filename):
@@ -105,7 +138,7 @@ class TestCases(unittest.TestCase):
 
     def test_get_titles_from_search_results(self):
         # call get_titles_from_search_results() on search_results.htm and save to a local variable
-
+        get_titles_from_search_results("search_results.htm")
         # check that the number of titles extracted is correct (20 titles)
 
         # check that the variable you saved after calling the function is a list
@@ -118,7 +151,7 @@ class TestCases(unittest.TestCase):
 
     def test_get_search_links(self):
         # check that TestCases.search_urls is a list
-
+        get_search_links() 
         # check that the length of TestCases.search_urls is correct (10 URLs)
 
 
@@ -129,7 +162,7 @@ class TestCases(unittest.TestCase):
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
         # for each URL in TestCases.search_urls (should be a list of tuples)
-
+        pass
         # check that the number of book summaries is correct (10)
 
             # check that each item in the list is a tuple
@@ -145,7 +178,7 @@ class TestCases(unittest.TestCase):
 
     def test_summarize_best_books(self):
         # call summarize_best_books and save it to a variable
-
+        pass 
         # check that we have the right number of best books (20)
 
             # assert each item in the list of best books is a tuple
@@ -159,7 +192,7 @@ class TestCases(unittest.TestCase):
 
     def test_write_csv(self):
         # call get_titles_from_search_results on search_results.htm and save the result to a variable
-
+        pass
         # call write csv on the variable you saved and 'test.csv'
 
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
