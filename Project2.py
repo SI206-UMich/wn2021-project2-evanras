@@ -270,18 +270,21 @@ class TestCases(unittest.TestCase):
         # call write csv on the variable you saved and 'test.csv'
         write_csv(titles, "test.csv")
         # read in the csv that you wrote (create a variable csv_lines - a list containing all the lines in the csv you just wrote to above)
+        csvLines = []
         with open("test.csv") as file:
-            csv = [line.strip().split(",") for line in file]
+            csvFile = csv.reader(file)
+            for i in csvFile:
+                csvLines.append(i)
             #print(csv)
 
         # check that there are 21 lines in the csv
-        self.assertEqual(len(csv), 21)
+        self.assertEqual(len(csvLines), 21)
         # check that the header row is correct
-        self.assertEqual(csv[0], ["Book title", "Author Name"])
+        self.assertEqual(csvLines[0], ["Book title", "Author Name"])
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
-        self.assertEqual(csv[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
-        # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
-        self.assertEqual(csv[-1], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
+        self.assertEqual(csvLines[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
+        # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'Julian Harrison (Introduction)'
+        self.assertEqual(csvLines[-1], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'Julian Harrison (Introduction)'])
 
 
 if __name__ == '__main__':
