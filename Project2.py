@@ -24,7 +24,7 @@ def get_titles_from_search_results(filename):
     file1 = open(filename, "r")
     data = file1.read()
     file1.close()
-    soup = BeautifulSoup(data, "html.parser")
+    soup = BeautifulSoup(data, "lxml")
     books = soup.find_all("a", class_ = "bookTitle")
     for book in books:
         bookList.append(book.text.strip())
@@ -88,7 +88,6 @@ def get_book_summary(book_url):
     bookTitlesList = []
     authorsList = []
     pagesList = []
-    intPages = []
     summary = []
     resp = requests.get(book_url)
     soup = BeautifulSoup(resp.content, "html.parser")
@@ -105,10 +104,6 @@ def get_book_summary(book_url):
         #page.split()
         pagesList.append(int(page.text.strip(" pages")))
     #print(pagesList)
-    #for i in range(len(pagesList)):
-     #   if i%2 == 1:
-      #      intPages.append(int(pagesList[i]))
-    #print(intPages)
     for i in range(1):
         summary = (bookTitlesList[i], authorsList[i], pagesList[i])
     #print(summary)
@@ -177,7 +172,7 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    with open(filename, "w", newline= "") as f:
+    with open(filename, "w", newline= "", encoding = "utf-8") as f:
         f = csv.writer(f, delimiter = ",")
         f.writerow(["Book title", "Author Name"])
         for i in data:
@@ -225,7 +220,7 @@ class TestCases(unittest.TestCase):
         for link in links:
             self.assertEqual(type(link), str)
         # check that each URL contains the correct url for Goodreads.com followed by /book/show/
-
+            self.assertTrue("/book/show/" in link)
 
     def test_get_book_summary(self):
         # create a local variable – summaries – a list containing the results from get_book_summary()
@@ -282,11 +277,11 @@ class TestCases(unittest.TestCase):
         # check that there are 21 lines in the csv
         self.assertEqual(len(csv), 21)
         # check that the header row is correct
-        self.assertEqual(csv[0], "Book title, Author Name")
+        self.assertEqual(csv[0], ["Book title", "Author Name"])
         # check that the next row is 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'
-        Self.assertEqual(csv[1], 'Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling')
+        self.assertEqual(csv[1], ['Harry Potter and the Deathly Hallows (Harry Potter, #7)', 'J.K. Rowling'])
         # check that the last row is 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'
-        self.assertEqual(csv[-1], 'Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling')
+        self.assertEqual(csv[-1], ['Harry Potter: The Prequel (Harry Potter, #0.5)', 'J.K. Rowling'])
 
 
 if __name__ == '__main__':
